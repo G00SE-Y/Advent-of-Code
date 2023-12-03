@@ -1,14 +1,14 @@
+#ifndef CUBE_H
+#define CUBE_H
+
+#include "cube.h"
+
 #include <fstream>
 #include <string>
 #include <iostream>
 #include <vector>
 #include <map>
 #include <regex>
-
-#ifndef CUBE_1_H
-#define CUBE_1_H
-
-#include "Cube1.h"
 
 std::map<std::string, int> counts = {
     {"red", 12},
@@ -52,13 +52,10 @@ std::pair<int, std::vector<std::vector<int>>> parseLine(std::string ln) {
 
     int pos1, pos2;
 
-    // Get ID
     pos1 = ln.find("Game ") + 5;
     pos2 = ln.find(": ");
     tmp = ln.substr(pos1, pos2 - pos1);
     id = std::stoi(tmp);
-
-    // std::cout << "ID: " << id << std::endl;
 
     ln.erase(0, pos2 + 2);
 
@@ -91,7 +88,7 @@ bool isPossible(std::vector<std::vector<int>> game) {
     return true;
 }
 
-int solution(std::string infile) {
+int solution_p1(std::string infile) {
 
     std::ifstream f (infile);
     std::string ln;
@@ -99,12 +96,51 @@ int solution(std::string infile) {
     int sum = 0;
 
     while(std::getline(f, ln)) {
-        // std::cout << ln << std::endl;
 
         auto game = parseLine(ln);
 
         if(isPossible(game.second))
             sum += game.first;
+    }
+
+    f.close();
+
+    return sum;
+}
+
+std::vector<int> minPossible(std::vector<std::vector<int>> game) {
+
+    std::vector<int> min(3, 0);
+
+    for(auto v: game) {
+        
+        if(v[0] > min[0])
+            min[0] = v[0];
+
+        if(v[1] > min[1])
+            min[1] = v[1];
+        
+        if(v[2] > min[2])
+            min[2] = v[2];
+            
+    }
+
+    return min;
+}
+
+int solution_p2(std::string infile) {
+
+    std::ifstream f (infile);
+    std::string ln;
+
+    int sum = 0;
+
+    while(std::getline(f, ln)) {
+
+        auto game = parseLine(ln);
+
+        std::vector<int> min = minPossible(game.second);
+        sum += min[0] * min[1] * min[2];
     }
 
     f.close();

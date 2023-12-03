@@ -1,15 +1,38 @@
+#ifndef TREBUCHET_H
+#define TREBUCHET_H
+
+#include "trebuchet.h"
+
 #include <vector>
 #include <fstream>
 #include <string>
 #include <regex>
 
-#ifndef TREBUCHET_2_H
-#define TREBUCHET_2_H
+int solution_p1(std::string infile) {
 
-#include "Trebuchet2.h"
+    std::ifstream f (infile);
+    std::string ln;
 
-#include <vector>
-#include <regex>
+    std::regex numerics("[^0-9]");
+    int sum = 0;
+    int num;
+
+    if(f.is_open()) {
+        while(getline(f, ln)) {
+            ln = std::regex_replace(ln, numerics, "");
+
+            if(ln.size()) {
+                num = (ln.front() - 48) * 10 + ln.back() - 48;
+            }
+
+            sum += num;
+        }
+    }
+
+    f.close();
+    return sum;
+}
+
 
 std::vector<std::pair<std::regex, std::string>> rs = {
     std::make_pair(std::regex("zero"), "z0o"),
@@ -24,7 +47,7 @@ std::vector<std::pair<std::regex, std::string>> rs = {
     std::make_pair(std::regex("nine"), "n9e")
 };
 
-int solution(std::string infile) {
+int solution_p2(std::string infile) {
     
     std::ifstream f (infile);
     std::string ln, ln_old, ln_new;
