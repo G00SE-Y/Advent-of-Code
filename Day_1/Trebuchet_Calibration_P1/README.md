@@ -1,8 +1,10 @@
 # To Run: 
 
 In the folder of the solution you want to run type
-`g++ trebuchet1_runner.cpp Trebuchet1.cpp -o trebuchet1`
-`./trebuchet1.exe <*.txt>` 
+```
+g++ trebuchet1_runner.cpp Trebuchet1.cpp -o trebuchet1
+./trebuchet1.exe <*.txt>
+```
 where `*.txt` is the file you want the program to evaluate.
 
 # Info
