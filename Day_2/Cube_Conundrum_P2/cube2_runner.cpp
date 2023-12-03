@@ -1,5 +1,5 @@
 #include <iostream>
-#include "SOLUTION.H"
+#include "Cube2.h"
 
 int main(int argc, char* argv[]) {
 
@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
 
     std::cout << "Calculating solution for `" << argv[1] << "` ..." << std::endl;
     int sol = solution(argv[1]);
-    std::cout << "Final Calibration: " << sol << std::endl;
+    std::cout << "Sum of Power of Minimums: " << sol << std::endl;
 
     return 0;
 }
