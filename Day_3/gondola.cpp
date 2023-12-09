@@ -110,7 +110,7 @@ int solution_p2(std::string infile) {
 
     std::ifstream f (infile);
     std::string ln, tmp, check;
-    int sum = 0;
+    long long sum = 0;
 
     std::smatch sm;
 
@@ -119,15 +119,16 @@ int solution_p2(std::string infile) {
 
     if(f.is_open()) {
         while(getline(f, ln)) {
+            std::cout << "current sum: " << sum << std::endl;
 
             int pos = -1;
             int len = 0;
             box.push_back(ln);
 
-            for(auto s: box) {
-                std::cout << s << std::endl;
-            }
-            std::cout << std::endl;
+            // for(auto s: box) {
+            //     std::cout << s << std::endl;
+            // }
+            // std::cout << std::endl;
             
             if(box.size() == 2) { // if scanning first line
 
@@ -144,7 +145,40 @@ int solution_p2(std::string infile) {
 
                     std::cout << "sta  `" << tmp << "`\n" << std::endl;
 
-                    break;
+                    int count = std::distance(std::sregex_iterator(tmp.begin(), tmp.end(), num_re), std::sregex_iterator());
+
+                    if(count == 2) {
+
+                        int prod = 1;
+                        std::vector<std::vector<bool>> marks = {
+                            {false, true , false},
+                            {false, false, false}
+                        };
+
+                        for(int i = 0; i < 2; i++) {
+                            for(int j = pos + len - 1; j >= 0 && j >= pos; j--) {
+
+                                if(marks[i][j - pos] == true) continue;
+                                marks[i][j - pos] = true;
+
+                                if(std::regex_search(box[i].substr(j, 1), num_re)) {
+                                    
+                                    int start = j;
+                                    while(start - 1 >= 0 && std::regex_search(box[i].substr(start - 1, 1), num_re)) {
+                                        
+                                        if(j >= pos) marks[i][j - pos] = true;
+                                        start--;
+                                    }
+
+                                    if(start >= pos) marks[i][start - pos] = true;
+                                    std::cout << "Found: " << std::stoi(box[i].substr(start)) << std::endl;
+                                    prod = prod * std::stoi(box[i].substr(start));
+                                }
+                            }
+                        }
+                        sum += prod;
+                    }
+                    box[0][pos + 1] = '.';
                 }
             }
             else if(box.size() == 3) { // scanning any middle line
@@ -161,9 +195,43 @@ int solution_p2(std::string infile) {
                         + box[1].substr(pos, len) + "."
                         + box[2].substr(pos, len); 
 
-                    std::cout << "mid  `" << tmp << "`\n" << std::endl;
+                    int count = std::distance(std::sregex_iterator(tmp.begin(), tmp.end(), num_re), std::sregex_iterator());
 
-                    break;
+                    if(count == 2) {
+
+                        int prod = 1;
+                        std::vector<std::vector<bool>> marks = {
+                            {false, false, false},
+                            {false, true , false},
+                            {false, false, false}
+                        };
+
+                        for(int i = 0; i < 3; i++) {
+                            for(int j = pos + len - 1; j >= 0 && j >= pos; j--) {
+
+                                if(marks[i][j - pos] == true) continue;
+                                marks[i][j - pos] = true;
+
+                                if(std::regex_search(box[i].substr(j, 1), num_re)) {
+                                    
+                                    int start = j;
+                                    while(start - 1 >= 0 && std::regex_search(box[i].substr(start - 1, 1), num_re)) {
+                                        
+                                        if(j >= pos) marks[i][j - pos] = true;
+                                        start--;
+                                    }
+
+                                    if(start >= pos) marks[i][start - pos] = true;
+
+                                    std::cout << "Found: " << std::stoi(box[i].substr(start)) << std::endl;
+
+                                    prod = prod * std::stoi(box[i].substr(start));
+                                }
+                            }
+                        }
+                        sum += prod;
+                    }
+                    box[1][pos + 1] = '.';
                 }
 
                 if(box.size() == 3)
@@ -173,6 +241,61 @@ int solution_p2(std::string infile) {
         }
 
         // scanning last line
+        // for(auto s: box) {
+        //     std::cout << s << std::endl;
+        // }
+        // std::cout << std::endl;
+
+        int pos, len;
+        while(std::regex_search(box[0], sm, star_re)) { // while a gear exists
+
+            pos = sm.position();
+            len = 2;
+
+            if(pos > 0 && pos < ln.size()) { pos--; len++; }
+            else if(pos == ln.size() - 1) { pos--; }
+
+            tmp = box[0].substr(pos, len) + "."
+                + box[1].substr(pos, len);
+
+            std::cout << "end  `" << tmp << "`\n" << std::endl;
+
+            int count = std::distance(std::sregex_iterator(tmp.begin(), tmp.end(), num_re), std::sregex_iterator());
+
+            if(count == 2) {
+
+                int prod = 1;
+                std::vector<std::vector<bool>> marks = {
+                    {false, false, false},
+                    {false, true , false}
+                };
+
+                for(int i = 0; i < 2; i++) {
+                    for(int j = pos + len - 1; j >= 0 && j >= pos; j--) {
+
+                        if(marks[i][j - pos] == true) continue;
+                        marks[i][j - pos] = true;
+
+                        if(std::regex_search(box[i].substr(j, 1), num_re)) {
+                            
+                            int start = j;
+                            while(start - 1 >= 0 && std::regex_search(box[i].substr(start - 1, 1), num_re)) {
+                                
+                                if(j >= pos) marks[i][j - pos] = true;
+                                start--;
+                            }
+
+                            if(start >= pos) marks[i][start - pos] = true;
+
+                            std::cout << "Found: " << std::stoi(box[i].substr(start)) << std::endl;
+                            prod = prod * std::stoi(box[i].substr(start));
+                        }
+                    }
+                }
+                sum += prod;
+            }
+            box[1][pos + 1] = '.';
+        }
 
     }
 
